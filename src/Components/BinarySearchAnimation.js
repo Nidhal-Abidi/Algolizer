@@ -1,6 +1,6 @@
 import React from "react"
 import Header from "./Header"
-import "./SearchAnimation.css"
+import "./AlgorithmAnimation.css"
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter"
 import py from "react-syntax-highlighter/dist/esm/languages/hljs/python"
 import { cb } from "react-syntax-highlighter/dist/esm/styles/prism"

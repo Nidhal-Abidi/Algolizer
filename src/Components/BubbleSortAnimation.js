@@ -6,7 +6,7 @@ import py from "react-syntax-highlighter/dist/esm/languages/hljs/python"
 import { cb } from "react-syntax-highlighter/dist/esm/styles/prism"
 SyntaxHighlighter.registerLanguage("python", py)
 
-class LinearSearchAnimation extends React.Component {
+class BubbleSortAnimation extends React.Component {
   constructor() {
     super()
     this.state = {
@@ -49,16 +49,9 @@ class LinearSearchAnimation extends React.Component {
   }
 
   success = (animationRslt) => {
-    console.log("Congrats We Found The Key !!")
-    animationRslt.innerText = "Congrats We Found The Key :)"
+    console.log("Congrats The Array is Sorted !!")
+    animationRslt.innerText = "Congrats The Array is Sorted :)"
     animationRslt.style.backgroundColor = "green"
-    animationRslt.style.fontSize = "30px"
-  }
-
-  failure = (animationRslt) => {
-    console.log("Unfortunately We Couldn't Find The Key !!")
-    animationRslt.innerText = "Unfortunately We Couldn't Find The Key !!"
-    animationRslt.style.backgroundColor = "red"
     animationRslt.style.fontSize = "30px"
   }
 
@@ -67,14 +60,14 @@ class LinearSearchAnimation extends React.Component {
 
     this.clearPreviousData(ctx, canvas.width, canvas.height, animationRslt)
     /*Note : "x_axis_pos" is different depending on the shape that's being drawn 
-          //Circle: it represents the center
-          //Square: represents the upper left corner
-  
-          + to be on top of each other: 
-          1) radius = edge / 2
-          2) X_circle = X_square + edge/2
-             Y_circle = Y_square + edge/2
-      */
+              //Circle: it represents the center
+              //Square: represents the upper left corner
+      
+              + to be on top of each other: 
+              1) radius = edge / 2
+              2) X_circle = X_square + edge/2
+                 Y_circle = Y_square + edge/2
+          */
 
     // We start by drawing the squares (ie coordinates below represent upper left corner of square)
     let x_axis_pos = canvas.width / 10 - this.state.radius
@@ -125,81 +118,222 @@ class LinearSearchAnimation extends React.Component {
     console.log("Let's start the Animation !!")
   }
 
-  linearSearch = (
-    arrNbrs,
-    key,
-    x_axis_pos,
-    y_axis_pos,
+  bubbleSort = (
+    arr,
+    i,
+    j,
+    x_axis_pos_back,
+    y_axis_pos_back,
+    x_axis_pos_front,
+    y_axis_pos_front,
     ctx,
     canvas,
     animationRslt,
-    btn1,
-    index
+    btn1
   ) => {
-    if (index < arrNbrs.length) {
-      this.rectToCircleAnimation(
-        ctx,
-        x_axis_pos,
-        y_axis_pos,
-        this.state.edge,
-        arrNbrs[index]
-      )
-      if (arrNbrs[index] === parseInt(key)) {
-        this.success(animationRslt)
-        btn1.removeAttribute("disabled")
-        btn1.classList.remove("not-working")
-        //console.log(btn1)
-        return 1
-      }
+    if (j > 1) {
+      if (i < arr.length - 2) {
+        //console.log(arr[i] + " , " + arr[i + 1])
+        this.rectToCircleAnimation(
+          ctx,
+          x_axis_pos_back,
+          y_axis_pos_back,
+          this.state.edge,
+          arr[i]
+        )
+        this.rectToCircleAnimation(
+          ctx,
+          x_axis_pos_front,
+          y_axis_pos_front,
+          this.state.edge,
+          arr[i + 1]
+        )
+        if (arr[i] > arr[i + 1]) {
+          setTimeout(() => {
+            console.log("swap " + arr[i] + " & " + arr[i + 1])
 
-      if (x_axis_pos + 2 * (this.state.edge + this.state.dx) < canvas.width) {
-        setTimeout(() => {
-          this.circleToRectAnimation(
-            ctx,
-            x_axis_pos,
-            y_axis_pos,
-            this.state.edge,
-            arrNbrs[index]
-          )
-          this.linearSearch(
-            arrNbrs,
-            key,
-            x_axis_pos + this.state.edge + this.state.dx,
-            y_axis_pos,
-            ctx,
-            canvas,
-            animationRslt,
-            btn1,
-            index + 1
-          )
-        }, 1700)
+            let temp = arr[i]
+            arr[i] = arr[i + 1]
+            arr[i + 1] = temp
+            //console.log(arr)
+            this.bubbleSort(
+              arr,
+              i,
+              j,
+              x_axis_pos_back,
+              y_axis_pos_back,
+              x_axis_pos_front,
+              y_axis_pos_front,
+              ctx,
+              canvas,
+              animationRslt,
+              btn1
+            )
+          }, 2000)
+        } else {
+          setTimeout(() => {
+            this.circleToRectAnimation(
+              ctx,
+              x_axis_pos_back,
+              y_axis_pos_back,
+              this.state.edge,
+              arr[i]
+            )
+            if (
+              x_axis_pos_back + 2 * (this.state.edge + this.state.dx) <
+              canvas.width
+            ) {
+              //Still on the same line
+              x_axis_pos_back += this.state.edge + this.state.dx
+            } else {
+              //Back to a new line
+              x_axis_pos_back = canvas.width / 10 - this.state.edge / 2
+              y_axis_pos_back += this.state.edge + this.state.dy
+            }
+
+            //Same logic for x_axis_pos_front
+
+            if (
+              x_axis_pos_front + 2 * (this.state.edge + this.state.dx) <
+              canvas.width
+            ) {
+              x_axis_pos_front += this.state.edge + this.state.dx
+            } else {
+              x_axis_pos_front = canvas.width / 10 - this.state.edge / 2
+              y_axis_pos_front += this.state.edge + this.state.dy
+            }
+
+            //console.log("x: " + x_axis_pos)
+            this.bubbleSort(
+              arr,
+              i + 1,
+              j,
+              x_axis_pos_back,
+              y_axis_pos_back,
+              x_axis_pos_front,
+              y_axis_pos_front,
+              ctx,
+              canvas,
+              animationRslt,
+              btn1
+            )
+          }, 2000)
+        }
+      } else if (i == arr.length - 2) {
+        this.rectToCircleAnimation(
+          ctx,
+          x_axis_pos_back,
+          y_axis_pos_back,
+          this.state.edge,
+          arr[arr.length - 2]
+        )
+        this.rectToCircleAnimation(
+          ctx,
+          x_axis_pos_front,
+          y_axis_pos_front,
+          this.state.edge,
+          arr[arr.length - 1]
+        )
+        if (arr[arr.length - 2] > arr[arr.length - 1]) {
+          setTimeout(() => {
+            console.log("swap " + arr[i] + " & " + arr[i + 1])
+
+            let temp = arr[i]
+            arr[i] = arr[i + 1]
+            arr[i + 1] = temp
+            console.log(arr)
+            this.bubbleSort(
+              arr,
+              i + 1,
+              j,
+              x_axis_pos_back,
+              y_axis_pos_back,
+              x_axis_pos_front,
+              y_axis_pos_front,
+              ctx,
+              canvas,
+              animationRslt,
+              btn1
+            )
+          }, 2000)
+        } else {
+          setTimeout(() => {
+            this.bubbleSort(
+              arr,
+              i + 1,
+              j,
+              x_axis_pos_back,
+              y_axis_pos_back,
+              x_axis_pos_front,
+              y_axis_pos_front,
+              ctx,
+              canvas,
+              animationRslt,
+              btn1
+            )
+          }, 2000)
+        }
       } else {
+        this.rectToCircleAnimation(
+          ctx,
+          x_axis_pos_back,
+          y_axis_pos_back,
+          this.state.edge,
+          arr[arr.length - 2]
+        )
+        this.rectToCircleAnimation(
+          ctx,
+          x_axis_pos_front,
+          y_axis_pos_front,
+          this.state.edge,
+          arr[arr.length - 1]
+        )
+
         setTimeout(() => {
           this.circleToRectAnimation(
             ctx,
-            x_axis_pos,
-            y_axis_pos,
+            x_axis_pos_back,
+            y_axis_pos_back,
             this.state.edge,
-            arrNbrs[index]
+            arr[arr.length - 2]
           )
-          this.linearSearch(
-            arrNbrs,
-            key,
-            canvas.width / 10 - this.state.edge / 2,
-            y_axis_pos + this.state.edge + this.state.dy,
+          this.circleToRectAnimation(
+            ctx,
+            x_axis_pos_front,
+            y_axis_pos_front,
+            this.state.edge,
+            arr[arr.length - 1]
+          )
+          /*Get back to the beginning of the array to do another iteration +
+          check whether or not there are more swaps to be done */
+          x_axis_pos_back = canvas.width / 10 - this.state.edge / 2
+          y_axis_pos_back = canvas.height / 9 - this.state.edge / 2
+
+          x_axis_pos_front =
+            canvas.width / 10 -
+            this.state.edge / 2 +
+            (this.state.edge + this.state.dx)
+          y_axis_pos_front = canvas.height / 9 - this.state.edge / 2
+          this.bubbleSort(
+            arr,
+            0,
+            j - 1,
+            x_axis_pos_back,
+            y_axis_pos_back,
+            x_axis_pos_front,
+            y_axis_pos_front,
             ctx,
             canvas,
             animationRslt,
-            btn1,
-            index + 1
+            btn1
           )
-        }, 1700)
+        }, 2000)
       }
     } else {
+      this.success(animationRslt)
       btn1.removeAttribute("disabled")
       btn1.classList.remove("not-working")
-      console.log(btn1)
-      this.failure(animationRslt)
+      console.log("Congrats: The array is Sorted")
     }
   }
 
@@ -208,7 +342,6 @@ class LinearSearchAnimation extends React.Component {
     //Extract the HTML tags
     const btn1 = document.querySelector(".btn1")
     const arrInput = document.querySelector("#arr-input")
-    const key = document.querySelector("#search-key")
     const errors = document.querySelector(".error")
 
     const canvas = document.querySelector("#canvas")
@@ -218,12 +351,6 @@ class LinearSearchAnimation extends React.Component {
     // console.log(event.target)
     let errorMsgs = []
     let arrInputValues = [] //So that I can pass it to method "linearSearch"
-    if (key.value === "" || key.value == null) {
-      errorMsgs.push("Key value shouldn't be empty")
-    }
-    if (key.value.match(/[^0-9]+/)) {
-      errorMsgs.push("Key value shouldn't contain more than 1 NUMERIC value")
-    }
 
     if (arrInput.value.length === 0) {
       errorMsgs.push("Array shouldn't be empty")
@@ -257,20 +384,24 @@ class LinearSearchAnimation extends React.Component {
       this.drawArray(arrInput, canvas, ctx, animationRslt)
 
       //2)Initiate animation
-      this.linearSearch(
+
+      this.bubbleSort(
         arrInputValues,
-        key.value,
-        canvas.width / 10 - this.state.radius,
-        canvas.height / 9 - this.state.radius,
+        0,
+        arrInputValues.length,
+        canvas.width / 10 - this.state.edge / 2,
+        canvas.height / 9 - this.state.edge / 2,
+        canvas.width / 10 -
+          this.state.edge / 2 +
+          (this.state.edge + this.state.dx),
+        canvas.height / 9 - this.state.edge / 2,
         ctx,
         canvas,
         animationRslt,
-        btn1,
-        0
+        btn1
       )
     }
   }
-
   render() {
     return (
       <>
@@ -282,10 +413,12 @@ class LinearSearchAnimation extends React.Component {
             <form action="#" onSubmit={this.onSubmitForm}>
               <div className="input-values">
                 <label htmlFor="arr-input">Array values </label>
-                <input type="text" name="arr-input" id="arr-input" />
-
-                <label htmlFor="search-key">Key to search for</label>
-                <input type="text" name="search-key" id="search-key" />
+                <input
+                  type="text"
+                  name="arr-input"
+                  id="arr-input"
+                  className="arr-input-sort"
+                />
               </div>
 
               <div className="animation-control">
@@ -309,10 +442,17 @@ class LinearSearchAnimation extends React.Component {
               language="python"
               style={cb}
               codeTagProps={{
-                style: { fontSize: "1.8rem" },
+                style: { fontSize: "1.5rem" },
               }}
             >
-              {`def linearSearch(arr,key):\n for i in range(len(arr)):\n\tif (arr[ i ] == key):\n\t  return True\n return False `}
+              {`def bubbleSort(arr):
+  n = len(arr)
+  for i in range(n):
+    # Last i elements are already in place
+    for j in range(0, n-i-1):
+      if (arr[j] > arr[j+1]):
+        # swap(arr[j],arr[j+1])
+        arr[j],arr[j+1] = arr[j+1],arr[j]`}
             </SyntaxHighlighter>
             <h1>Space & Time Complexity</h1>
             <SyntaxHighlighter
@@ -322,7 +462,7 @@ class LinearSearchAnimation extends React.Component {
                 style: { fontSize: "1.7rem" },
               }}
             >
-              {`Time Complexity: O(N)\nSpace Complexity: O(1)`}
+              {`Time Complexity: O(N²)\nSpace Complexity: O(1)`}
             </SyntaxHighlighter>
           </div>
         </div>
@@ -331,4 +471,4 @@ class LinearSearchAnimation extends React.Component {
   }
 }
 
-export default LinearSearchAnimation
+export default BubbleSortAnimation

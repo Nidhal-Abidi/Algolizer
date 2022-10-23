@@ -105,7 +105,12 @@ input {
   font-size: 20px;
   font-weight: 550;
 }
+/* USed only for layout of sort algorithms so that input can look bigger without ruining styles 
+of search algos */
 
+.arr-input-sort {
+  width: 50%;
+}
 .not-working {
   background-color: grey;
   cursor: default;
