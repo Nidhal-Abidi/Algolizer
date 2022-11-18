@@ -14,6 +14,7 @@ class InsertionSortAnimation extends React.Component {
       edge: 80,
       dx: 20,
       dy: 30,
+      speed: 2000,
     }
   }
 
@@ -183,6 +184,7 @@ class InsertionSortAnimation extends React.Component {
     const btn1 = document.querySelector(".btn1")
     const arrInput = document.querySelector("#arr-input")
     const errors = document.querySelector(".error")
+    const selectTag = document.querySelector("#speed")
 
     const canvas = document.querySelector("#canvas")
     const ctx = canvas.getContext("2d")
@@ -211,6 +213,14 @@ class InsertionSortAnimation extends React.Component {
       console.log(errorMsgs)
       errors.innerText = errorMsgs
     } else {
+      //Save the speed of the animation
+      const speedAnimation = selectTag.value
+      if (speedAnimation == "1X") {
+        this.setState({ speed: 1500 })
+      } else if (speedAnimation == "1.5X") {
+        this.setState({ speed: 1000 })
+      }
+
       errors.innerText = ""
       //We should disable "Begin Animation" btn + enable "Pause/Resume" btn
       //btn2.classList.remove("not-working")
@@ -313,7 +323,7 @@ class InsertionSortAnimation extends React.Component {
               animationRslt,
               btn1
             )
-          }, 1500)
+          }, this.state.speed)
         } else {
           //There are no possible swaps on the left side of the key
           setTimeout(() => {
@@ -368,7 +378,7 @@ class InsertionSortAnimation extends React.Component {
               animationRslt,
               btn1
             )
-          }, 1500)
+          }, this.state.speed)
         }
       } else {
         //Next iteration
@@ -406,7 +416,7 @@ class InsertionSortAnimation extends React.Component {
             animationRslt,
             btn1
           )
-        }, 1500)
+        }, this.state.speed)
       }
     } else {
       console.log("Array is sorted !!")
@@ -433,13 +443,18 @@ class InsertionSortAnimation extends React.Component {
                   id="arr-input"
                   className="arr-input-sort"
                 />
+
+                <select name="speed" id="speed">
+                  <option value={"0.5X"}>0.5X</option>
+                  <option value={"1X"}>1X</option>
+                  <option value={"1.5X"}>1.5X</option>
+                </select>
               </div>
 
               <div className="animation-control">
                 <button type="submit" className="btn1">
                   Begin Animation
                 </button>
-                {/*<!-- <button className="btn2 not-working" disabled>Pause/Resume</button> -->*/}
               </div>
             </form>
           </div>

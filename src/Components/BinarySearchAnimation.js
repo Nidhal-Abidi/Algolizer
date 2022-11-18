@@ -14,6 +14,7 @@ class BinarySearchAnimation extends React.Component {
       edge: 80,
       dx: 20,
       dy: 30,
+      speed: 2000,
     }
   }
   rectToCircleAnimation = (ctx, x_axis_pos, y_axis_pos, edge, nbr) => {
@@ -188,7 +189,7 @@ class BinarySearchAnimation extends React.Component {
             mid + 1,
             high
           )
-        }, 1700)
+        }, this.state.speed)
       } else {
         setTimeout(() => {
           this.circleToRectAnimation(
@@ -208,7 +209,7 @@ class BinarySearchAnimation extends React.Component {
             low,
             mid - 1
           )
-        }, 1700)
+        }, this.state.speed)
       }
     }
   }
@@ -220,6 +221,7 @@ class BinarySearchAnimation extends React.Component {
     const arrInput = document.querySelector("#arr-input")
     const key = document.querySelector("#search-key")
     const errors = document.querySelector(".error")
+    const selectTag = document.querySelector("#speed")
 
     const canvas = document.querySelector("#canvas")
     const ctx = canvas.getContext("2d")
@@ -255,6 +257,14 @@ class BinarySearchAnimation extends React.Component {
       //I don't think it works
       errors.innerText = errorMsgs
     } else {
+      //Save the speed of the animation
+      const speedAnimation = selectTag.value
+      if (speedAnimation == "1X") {
+        this.setState({ speed: 1500 })
+      } else if (speedAnimation == "1.5X") {
+        this.setState({ speed: 1000 })
+      }
+
       errors.innerText = ""
       //We should disable "Begin Animation" btn + enable "Pause/Resume" btn
       //btn2.classList.remove("not-working")
@@ -295,13 +305,17 @@ class BinarySearchAnimation extends React.Component {
 
                 <label htmlFor="search-key">Key to search for</label>
                 <input type="text" name="search-key" id="search-key" />
-              </div>
 
+                <select name="speed" id="speed">
+                  <option value={"0.5X"}>0.5X</option>
+                  <option value={"1X"}>1X</option>
+                  <option value={"1.5X"}>1.5X</option>
+                </select>
+              </div>
               <div className="animation-control">
                 <button type="submit" className="btn1">
                   Begin Animation
                 </button>
-                {/*<!-- <button className="btn2 not-working" disabled>Pause/Resume</button> -->*/}
               </div>
             </form>
           </div>

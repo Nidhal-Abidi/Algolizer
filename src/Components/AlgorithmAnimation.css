@@ -47,14 +47,21 @@ html {
 }
 
 .input-values {
-  width: 60%;
+  width: 65%;
   position: relative;
   float: left;
   justify-content: center;
 }
 
+#speed {
+  height: 45px;
+  width: 60px;
+  font-size: 17px;
+  margin-left: 10px;
+}
+
 .animation-control {
-  width: 35%;
+  width: 25%;
   position: relative;
   float: right;
   align-items: center;
@@ -109,7 +116,7 @@ input {
 of search algos */
 
 .arr-input-sort {
-  width: 50%;
+  width: 40%;
 }
 .not-working {
   background-color: grey;

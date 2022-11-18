@@ -14,6 +14,7 @@ class BubbleSortAnimation extends React.Component {
       edge: 80,
       dx: 20,
       dy: 30,
+      speed: 2000,
     }
   }
   rectToCircleAnimation = (ctx, x_axis_pos, y_axis_pos, edge, nbr) => {
@@ -169,7 +170,7 @@ class BubbleSortAnimation extends React.Component {
               animationRslt,
               btn1
             )
-          }, 2000)
+          }, this.state.speed)
         } else {
           setTimeout(() => {
             this.circleToRectAnimation(
@@ -217,7 +218,7 @@ class BubbleSortAnimation extends React.Component {
               animationRslt,
               btn1
             )
-          }, 2000)
+          }, this.state.speed)
         }
       } else if (i == arr.length - 2) {
         this.rectToCircleAnimation(
@@ -255,7 +256,7 @@ class BubbleSortAnimation extends React.Component {
               animationRslt,
               btn1
             )
-          }, 2000)
+          }, this.state.speed)
         } else {
           setTimeout(() => {
             this.bubbleSort(
@@ -271,7 +272,7 @@ class BubbleSortAnimation extends React.Component {
               animationRslt,
               btn1
             )
-          }, 2000)
+          }, this.state.speed)
         }
       } else {
         this.rectToCircleAnimation(
@@ -327,7 +328,7 @@ class BubbleSortAnimation extends React.Component {
             animationRslt,
             btn1
           )
-        }, 2000)
+        }, this.state.speed)
       }
     } else {
       this.success(animationRslt)
@@ -343,6 +344,7 @@ class BubbleSortAnimation extends React.Component {
     const btn1 = document.querySelector(".btn1")
     const arrInput = document.querySelector("#arr-input")
     const errors = document.querySelector(".error")
+    const selectTag = document.querySelector("#speed")
 
     const canvas = document.querySelector("#canvas")
     const ctx = canvas.getContext("2d")
@@ -372,6 +374,14 @@ class BubbleSortAnimation extends React.Component {
       //I don't think it works
       errors.innerText = errorMsgs
     } else {
+      //Save the speed of the animation
+      const speedAnimation = selectTag.value
+      if (speedAnimation == "1X") {
+        this.setState({ speed: 1500 })
+      } else if (speedAnimation == "1.5X") {
+        this.setState({ speed: 1000 })
+      }
+
       errors.innerText = ""
       //We should disable "Begin Animation" btn + enable "Pause/Resume" btn
       //btn2.classList.remove("not-working")
@@ -419,13 +429,18 @@ class BubbleSortAnimation extends React.Component {
                   id="arr-input"
                   className="arr-input-sort"
                 />
+
+                <select name="speed" id="speed">
+                  <option value={"0.5X"}>0.5X</option>
+                  <option value={"1X"}>1X</option>
+                  <option value={"1.5X"}>1.5X</option>
+                </select>
               </div>
 
               <div className="animation-control">
                 <button type="submit" className="btn1">
                   Begin Animation
                 </button>
-                {/*<!-- <button className="btn2 not-working" disabled>Pause/Resume</button> -->*/}
               </div>
             </form>
           </div>
@@ -433,6 +448,9 @@ class BubbleSortAnimation extends React.Component {
             {/*<!-- Animation Section -->*/}
             <h1>Animation Section</h1>
             <div className="animation-result"></div>
+            {/* If you add styling to the canvas in a CSS file the shapes displayed will be blurred, 
+            we have to set the values of width and height in HTML to avoid that. 
+            The prob is that it's not responsive at all */}
             <canvas id="canvas" width="1000" height="700"></canvas>
           </div>
           <div className="rightpane">
